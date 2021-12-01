@@ -29,7 +29,7 @@ class GridFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
         fragmentView?.gridfragment_recyclerview?.adapter = UserFragmentRecyclerViewAdapter()
         fragmentView?.gridfragment_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
-        
+
         return fragmentView
     }
 

@@ -3,7 +3,7 @@
     package="org.techtown.howlstagram_f16">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Howlstagram_f16">
+        <activity
+            android:name=".navigation.CommentActivity"
+            android:exported="false" />
         <activity
             android:name=".navigation.AddPhotoActivity"
             android:exported="false" />
