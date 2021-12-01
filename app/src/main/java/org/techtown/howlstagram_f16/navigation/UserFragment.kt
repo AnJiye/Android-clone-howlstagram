@@ -24,6 +24,7 @@ import org.techtown.howlstagram_f16.navigation.model.ContentDTO
 import kotlinx.android.synthetic.main.fragment_user.view.*
 import org.techtown.howlstagram_f16.LoginActivity
 import org.techtown.howlstagram_f16.MainActivity
+import org.techtown.howlstagram_f16.navigation.model.AlarmDTO
 import org.techtown.howlstagram_f16.navigation.model.FollowDTO
 
 class UserFragment : Fragment() {
@@ -150,7 +151,7 @@ class UserFragment : Fragment() {
                 followDTO = FollowDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserid!!] = true
-
+                followerAlarm(uid!!)
                 transaction.set(tsDocFollower, followDTO!!)
                 return@runTransaction
             }
@@ -163,10 +164,21 @@ class UserFragment : Fragment() {
                 // It add my follower when I don't follow a third person
                 followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserid!!] = true
+                followerAlarm(uid!!)
             }
             transaction.set(tsDocFollower, followDTO!!)
             return@runTransaction
         }
+    }
+
+    fun followerAlarm(destinationUid : String) {
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth?.currentUser?.email
+        alarmDTO.uid = auth?.currentUser?.uid
+        alarmDTO.kind = 2
+        alarmDTO.timestamp = System.currentTimeMillis()
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
     }
 
     // 올린 이미지를 다운로드받는 함수
