@@ -72,6 +72,11 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
     }
 
+    override fun onStart() {
+        super.onStart()
+        moveMainPage(auth?.currentUser)
+    }
+
     fun printHashKey() {
         try {
             val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
@@ -203,6 +208,8 @@ class LoginActivity : AppCompatActivity() {
         // 파이어베이스 유저 상태가 있을 경우 다음 페이지로 넘어갈 수 있음
         if(user != null) {
             startActivity(Intent(this, MainActivity::class.java))
+            // loginActivity가 꺼지면서 mainActivity가 켜질 수 있도록
+            finish()
         }
     }
 }

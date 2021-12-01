@@ -1,5 +1,6 @@
 package org.techtown.howlstagram_f16.navigation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +15,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_main.*
 import org.techtown.howlstagram_f16.R
 import org.techtown.howlstagram_f16.navigation.model.ContentDTO
 import kotlinx.android.synthetic.main.fragment_user.view.*
+import org.techtown.howlstagram_f16.LoginActivity
+import org.techtown.howlstagram_f16.MainActivity
 
 class UserFragment : Fragment() {
     var fragmentView : View? = null
     var firestore : FirebaseFirestore? = null
     var uid : String? = null
     var auth : FirebaseAuth? = null
+    // 현재 아이디가 내 아이디인지 다른 사람 아이디인지 알아보기 위한 변수
+    var currentUserid : String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +40,30 @@ class UserFragment : Fragment() {
         uid = arguments?.getString("destinationUid")
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        currentUserid = auth?.currentUser?.uid
+
+        if (uid == currentUserid) {
+            // MyPage - 로그아웃
+            fragmentView?.account_btn_follow_signout?.text = getString(R.string.signout)
+            fragmentView?.account_btn_follow_signout?.setOnClickListener {
+                activity?.finish()
+                startActivity(Intent(activity, LoginActivity::class.java))
+                auth?.signOut()
+            }
+        } else {
+            // OtherUserPage
+            fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
+            var mainactivity = (activity as MainActivity)
+            mainactivity?.toolbar_username?.text = arguments?.getString("userId")
+            mainactivity?.toolbar_btn_back?.setOnClickListener {
+                mainactivity.bottom_navigation.selectedItemId = R.id.action_home
+            }
+            // 숨기기
+            mainactivity?.toolbar_title_image?.visibility = View.GONE
+            // 보이기
+            mainactivity?.toolbar_username?.visibility = View.VISIBLE
+            mainactivity?.toolbar_btn_back.visibility = View.VISIBLE
+        }
 
         // adapter를 달아주고 한 줄에 3개씩 뜰 수 있도록 3을 넘겨줌
         fragmentView?.account_recyclerview?.adapter = UserFragmentRecyclerViewAdapter()
